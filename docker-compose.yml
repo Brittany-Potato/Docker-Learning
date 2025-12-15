@@ -1,0 +1,51 @@
+version: '3.8' # Standard version for Docker Compose
+
+services:
+
+#* SERVICE 1: Development Environment 
+# Goal: Easy debugging and live code updates
+
+app-dev:
+  # Build Configuration:
+  build:
+    context: . # Use current directory as build context
+    dockerfile: Dockerfile.dev # Point to the Dev Dockerfile
+
+  # Volumes (The magic of the Dev):
+  # This maps your local "test_script.py" to the containers '/app/test_script.py'
+  # If you edit app.py on your computer, the container sees the change immediately
+  volumes:
+    - ./test_script.py:/app/test_script.py
+
+  # Environment Variables:
+  # Pass settings without changing the code
+  environment:
+    - ENV_TYPE=development
+
+#* SERVICE 2: Production environment
+# Goal: Stability and Security.
+app-prod:
+  build:
+    context: .
+    dockerfile: Dockerfile.prod # Point to the PROD Dockerfile
+
+  # Restart Policy:
+  # If the app crashes, Docker will automatically try to restart the container
+  # 'On-faliure' is common for production apps.
+  restart: on-faliure
+
+  environment:
+    - ENV_TYPE=production
+
+#* SERVICE 3: Optimized / Multistage
+# Goal: Showing how to run the optimized build
+
+app-optimized:
+  build: 
+    context: .
+    dockerfile: Dockerfile.multistage
+
+    # Custom Container name:
+    # Instead of a random name (like folder_app-optimized_1),
+    # We force a specfic name
+    container_name: directory-demo-container

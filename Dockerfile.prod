@@ -1,0 +1,20 @@
+# Dockerfile for applications ready for Production
+
+#* 1. Base Image: Use a specific version hash (SHA) or tag for stability
+FROM python:3.9-slim
+
+#* 2. Setup: Create a non-root user (Security Best Practice)
+# (Runing as root is dangerous if the container is hacked)
+RUN useradd -m myuser
+
+#* 3. Work Directory: Set folder
+WORKDIR /test_script
+
+#* 4. Copy Files: Move files and change ownership tot he new user
+COPY --chown=myuser:myuser test_script.py .
+
+#* 5. User: Switch from 'root' to 'myuser'
+USER myuser
+
+#* 6. Command: Run the application
+CMD ["python", "test_script.py"]

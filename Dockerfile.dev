@@ -1,0 +1,15 @@
+# Dockerfile for applications still in development.
+
+#* 1. Base Image: Use a specific version of Python (Check the image file for more information)
+FROM python:3.9-slim
+
+#* 2. Work Directory: Set the working directory inside the container.
+# I.e. 'cd /test_script'
+WORKDIR /test_script
+
+#* 3. Copy the Files: Moving your local test_script into the container.
+COPY test_script.py .
+
+#* 4. Command: What happens when you run the container?
+# (This keeps the container alive running your scripts.)
+CMD ["python", "test_script.py"]

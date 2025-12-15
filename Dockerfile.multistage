@@ -1,0 +1,27 @@
+# Dockerfile for both Development AND Production 
+# Builder installs the heavy tools and dependencies 
+# The Runner copies ONLY the finished result from the builder
+
+#* ---------- STAGE ONE -------------
+# Copiling and preparing
+
+FROM python:3.9-alpine AS builder
+
+WORKDIR /build
+
+# Imaging we are installing heavy dependencies here
+# RUN pip install --target=/build/dependencies some-huge-library
+COPY test_script.py .
+
+#* ---------- STAGE TWO -------------
+# Starting fresh and deleting the history from stage one
+
+FROM python:3.9-slim
+
+WORKDIR /test_script
+
+# Copy ONLY the necessary files from the 'builder' stage
+COPY --from=builder /build/test_script.py .
+
+# Alpine is tiny, so the image will be very small
+CMD [ "python", "test_script.py" ]
